@@ -1,0 +1,26 @@
+# Python environment
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Streamlit specific
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# uv specific
+.uv/
+uv.lock
+
+# Distribution / Build
+dist/
+build/
+*.egg-info/
+
+# OS/IDE specific
+.DS_Store
+.vscode/
+.idea/
+
+# Environment variables
+.env
