@@ -5,6 +5,7 @@ description = "Simple steganography app using Streamlit and a bit of AI."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "cryptography>=48.0.0",
     "numpy>=2.4.4",
     "pillow>=12.2.0",
     "streamlit>=1.56.0",

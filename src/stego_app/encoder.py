@@ -1,4 +1,9 @@
+import base64
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from PIL import Image
+from typing import Any
 
 class Encoder:
     def __init__(self, delimiter="1111111111111110"):
@@ -7,17 +12,37 @@ class Encoder:
     def _text_to_binary(self, text: str) -> str:
         """Internal method to convert text to binary."""
         return ''.join(format(ord(char), '08b') for char in text)
+
+    def _get_key(self, password: str) -> bytes:
+        """Internal method to derive a AES key from the password."""
+        password_bytes = password.encode()
+        salt = b'stego_salt_123'  # Fixed salt for demonstration, in production use a random 16 bytes salt
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=100000,
+        )
+        return base64.urlsafe_b64encode(kdf.derive(password_bytes))
         
-    def encode(self, img_path, message, output_path) -> bool:
+        
+    def encode(self, img_path: str, message: str, output_path: str, password: str = None) -> bool:
         """Method to inject message into image.
         
         Keywords arguments :
         img_path -- Path to the original image
         message -- Message to encode inside the image
         output_path -- Path to save the new image with encoded message
+        password -- Password to encrypt the message (optional)
         """
+        if password:
+            f = Fernet(self._get_key(password))
+            message = f.encrypt(message.encode()).decode()
+
+            print(f"\n[DEBUG AES] Encrypted message : {message}\n")
+        
         img = Image.open(img_path).convert('RGB')
-        pixels = img.load()
+        pixels: Any = img.load()
         
         if pixels is None:
             raise ValueError("Impossible to load image")
