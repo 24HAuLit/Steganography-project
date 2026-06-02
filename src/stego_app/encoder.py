@@ -13,20 +13,20 @@ class Encoder:
         """Internal method to convert text to binary."""
         return ''.join(format(ord(char), '08b') for char in text)
 
-    def _get_key(self, password: str) -> bytes:
+    def _get_key(self, password: str, salt: str = "stego_salt_123", iterations: int = 100000) -> bytes:
         """Internal method to derive a AES key from the password."""
         password_bytes = password.encode()
-        salt = b'stego_salt_123'  # Fixed salt for demonstration, in production use a random 16 bytes salt
+        salt_bytes: bytes = salt.encode()  # Fixed salt for demonstration, in production use a random 16 bytes salt
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
-            salt=salt,
-            iterations=100000,
+            salt=salt_bytes,
+            iterations=iterations,
         )
         return base64.urlsafe_b64encode(kdf.derive(password_bytes))
         
         
-    def encode(self, img_path: str, message: str, output_path: str, password: str = None) -> bool:
+    def encode(self, img_path: str, message: str, output_path: str, password: str = None, salt: str = "stego_salt_123", iterations: int = 100000) -> bool:
         """Method to inject message into image.
         
         Keywords arguments :
@@ -34,9 +34,11 @@ class Encoder:
         message -- Message to encode inside the image
         output_path -- Path to save the new image with encoded message
         password -- Password to encrypt the message (optional)
+        salt -- Salt to use for key derivation (optional)
+        iterations -- Number of iterations for key derivation (optional)
         """
         if password:
-            f = Fernet(self._get_key(password))
+            f = Fernet(self._get_key(password, salt, iterations))
             message = f.encrypt(message.encode()).decode()
 
             print(f"\n[DEBUG AES] Encrypted message : {message}\n")
