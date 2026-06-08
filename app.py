@@ -41,7 +41,7 @@ with tab_encode:
                         f.write(encode_image.getbuffer())
                         
                     pwd_to_use = encode_password if encode_password else None
-                    encoder.encode(
+                    message = encoder.encode(
                         input_path, 
                         secret_message, 
                         output_path, 
@@ -51,6 +51,8 @@ with tab_encode:
                     )
                     
                     st.success("✅ Message hidden successfully!")
+
+                    st.write(f"Encoded message: {message}")
                     
                     with open(output_path, "rb") as file:
                         st.download_button(

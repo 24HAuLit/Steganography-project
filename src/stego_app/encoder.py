@@ -26,7 +26,7 @@ class Encoder:
         return base64.urlsafe_b64encode(kdf.derive(password_bytes))
         
         
-    def encode(self, img_path: str, message: str, output_path: str, password: str = None, salt: str = "stego_salt_123", iterations: int = 100000) -> bool:
+    def encode(self, img_path: str, message: str, output_path: str, password: str = None, salt: str = "stego_salt_123", iterations: int = 100000):
         """Method to inject message into image.
         
         Keywords arguments :
@@ -71,6 +71,6 @@ class Encoder:
                 if bit_idx >= msg_len:
                     img.save(output_path)
                     print("Image encoded")
-                    return True
+                    return message
         return False
         
