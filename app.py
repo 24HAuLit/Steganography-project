@@ -114,7 +114,7 @@ with tab_decode:
 
 with tab_explain:
     code = """
-    def _get_key(self, password: str) -> bytes:
+    def _get_key(self, password: str, salt: str = "stego_salt_123", iterations: int = 100000) -> bytes:
         \"""Internal method to derive a AES key from the password.\"""
         password_bytes = password.encode()  # We take our password and transform it in bytes
         salt = b'stego_salt_123'  # Fixed salt for demonstration, in production use a random 16 bytes salt
